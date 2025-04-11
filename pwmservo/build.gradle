@@ -15,6 +15,7 @@
  */
 
 apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
 
 android {
     compileSdkVersion DEFAULT_COMPILE_SDK_VERSION
@@ -32,4 +33,20 @@ dependencies {
     testImplementation 'com.google.android.things:androidthings:1.0'
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:1.10.19'
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'com.google.android.things.contrib'
+            artifactId = "driver-${project.name}"
+            version = '1.0'
+
+            println "🤔 $buildDir/outputs/aar/${project.name}-release.aar"
+            println project.name
+
+            artifact("$buildDir/outputs/aar/${project.name}-release.aar")
+        }
+    }
+    tasks.findByName("publishToMavenLocal")?.dependsOn("assembleRelease")
 }

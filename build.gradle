@@ -17,12 +17,13 @@
 buildscript {
     repositories {
         google()
-        jcenter()
-        google()
+        // jcenter()
+        mavenCentral()
+        mavenLocal()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.0'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+//        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -37,11 +38,31 @@ ext {
 
 allprojects {
     repositories {
-        jcenter()
+        // jcenter()
         google()
+        mavenCentral()
+        mavenLocal()
     }
-}
+    
+    apply plugin: 'maven-publish'
 
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                groupId = 'com.google.android.things.contrib'
+                artifactId = "driver-${project.name}"
+                version = '1.0'
+
+                println "🤔 $buildDir/outputs/aar/${project.name}-release.aar"
+                println project.name
+
+                artifact("$buildDir/outputs/aar/${project.name}-release.aar")
+            }
+        }
+        tasks.findByName("publishToMavenLocal")?.dependsOn("assembleRelease")
+    }
+
+}
 
 def publishing = hasProperty "PUBLISHING"
 if (publishing) {

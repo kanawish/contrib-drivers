@@ -61,6 +61,19 @@ public class RainbowHat {
         public String getLedG() { return "BCM19";}
         public String getLedB() { return "BCM26";}
     }
+
+    private static final class OdroidN2BoardDefaults implements BoardDefaults {
+        public String getI2cBus() { return "I2C-1";} // note: 1 and 2 vs 0 and 1
+        public String getSpiBus() { return "SPI0.0";}
+        public String getPiezoPwm() { return "33";}
+        public String getServoPwm() { return "12";} // ? tbd
+        public String getButtonA() { return "36";} // "40" not available
+        public String getButtonB() { return "36";} // "38" not available
+        public String getButtonC() { return "36";} // ok
+        public String getLedR() { return "31";} // yes
+        public String getLedG() { return "31";} // "35" only available when removing pwm_cd
+        public String getLedB() { return "31";} // "37" not available
+    }
     private static final class Imx7BoardDefaults implements BoardDefaults {
         public String getI2cBus() { return "I2C1";}
         public String getSpiBus() { return "SPI3.1";}
@@ -75,8 +88,11 @@ public class RainbowHat {
     }
     private static final boolean IS_RPI3 =
             Build.DEVICE.equals("rpi3") || Build.DEVICE.equals("rpi3bp");
+    private static final boolean IS_ODROIDN2 = Build.DEVICE.equals("odroidn2");
     private static final BoardDefaults BOARD = IS_RPI3 ?
-            new Rpi3BoardDefaults() : new Imx7BoardDefaults();
+            new Rpi3BoardDefaults() : IS_ODROIDN2 ? 
+            new OdroidN2BoardDefaults() : 
+            new Imx7BoardDefaults();
     public static final Button.LogicState BUTTON_LOGIC_STATE = Button.LogicState.PRESSED_WHEN_LOW;
     public static final int LEDSTRIP_LENGTH = 7;
 
